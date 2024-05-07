@@ -9,20 +9,31 @@ const Shop = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([])
     const [itemPerPage, setItemPerPage] = useState(15)
+    const [currentPage, setCurrentPage] = useState(0)
     const { count } = useLoaderData()
     const numberOfPage = Math.ceil(count / itemPerPage);
     const pages = [...Array(numberOfPage).keys()];
     useEffect(() => {
-        fetch('http://localhost:5000/products')
+        fetch(`http://localhost:5000/products?page=${currentPage}&size=${itemPerPage}`)
             .then(res => res.json())
             .then(data => setProducts(data))
-    }, []);
+    }, [currentPage, itemPerPage]);
     const handlePageItemChange = (e) => {
         console.log(e.target.value);
         const perPage = parseInt(e.target.value)
         setItemPerPage(perPage)
+        setCurrentPage(0)
     }
-
+    const handlePrevious = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+    const handleNext = () => {
+        if (currentPage < pages.length - 1) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
     useEffect(() => {
         const storedCart = getShoppingCart();
         const savedCart = [];
@@ -91,13 +102,18 @@ const Shop = () => {
                 </Cart>
             </div>
             <div className='pagination'>
+                <button onClick={handlePrevious}>Previous</button>
                 {
-                    pages.map(page => <button key={page}>{page}</button>)
+                    pages.map(page => <button
+                        className={currentPage === page && 'selected'}
+                        onClick={() => setCurrentPage(page)}
+                        key={page}>{page}</button>)
                 }
+                <button onClick={handleNext}>Next</button>
                 <select onChange={handlePageItemChange} value={itemPerPage} name="" id="">
-                    <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="20">20</option>
+                    <option value="30">30</option>
                     <option value="50">50</option>
                 </select>
             </div>

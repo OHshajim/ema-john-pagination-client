@@ -29,6 +29,12 @@
 }
 
 .pagination {
-    justify-content: center;
-    width: 100%;
+    text-align: center;
+    margin-bottom: 40px;
+}
+.pagination button{
+    margin-right: 10px;
+}
+.pagination .selected {
+    background: orangered;
 }
